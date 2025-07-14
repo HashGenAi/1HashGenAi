@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Better Social Media Hashtag Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-md max-w-md w-full">
+    <h2 class="text-2xl font-bold mb-4 text-center">Better Social Media Hashtag Generator</h2>
+    <input id="topic" type="text" placeholder="Enter a topic" class="w-full p-3 border rounded mb-4" />
+    <button onclick="generateHashtags()" class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700">Generate Hashtags</button>
+    <pre id="output" class="mt-6 whitespace-pre-wrap break-words text-gray-800"></pre>
+  </div>
+
+  <script>
+    async function generateHashtags() {
+      const topic = document.getElementById("topic").value.trim();
+      if (!topic) {
+        alert("Please enter a topic");
+        return;
+      }
+
+      const response = await fetch("/.netlify/functions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        document.getElementById("output").innerText = data.hashtags;
+      } else {
+        document.getElementById("output").innerText = "Error: " + data.error;
+      }
+    }
+  </script>
+</body>
+</html>
